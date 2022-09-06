@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Password</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<style type="text/css">
+			
+			html {
+				display: block;
+				position: relative;
+				margin: 0;
+				padding: 0;
+				min-height: 100vh;
+				background: #fff;
+				font-size: 18px;
+				font-family: "Helvetica Neue", Helvetica, sans-serif;
+			}
+			
+			textarea, select, input, button { outline: none; }
+
+			#gradient {
+				display: none;
+			}
+
+			.standalone #gradient {
+				display: block;
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: -moz-linear-gradient(top, #848488 1%, #ffffff 50%, #ffffff 100%);
+				background: -webkit-linear-gradient(top, #848488 1%,#ffffff 50%,#ffffff 100%);
+				background: linear-gradient(to bottom, #848488 1%,#ffffff 50%,#ffffff 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#848488', endColorstr='#ffffff',GradientType=0 );
+				opacity: 1;
+				transition: opacity 0.5s ease-in-out 1s;
+				
+			}
+			
+			.active #gradient {
+				opacity: 0;
+			}
+						
+			#form {
+				display: block;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				width: 500px;
+				height: 500px;
+				margin: -250px -250px;
+			}
+			
+			#logo {
+				display: block;
+				position: relative;
+				width: 500px;
+				height: 150px;
+			}
+			
+			#logo svg {
+				position: absolute;
+				left: 100px;
+				top: 45px;
+			}
+			
+			#logo svg #f0 { opacity: 0; transition: opacity 0.2s ease-in-out 1.5s }
+			.active #logo svg #f0 { opacity: 1; }
+			#logo svg #d0 { opacity: 1; transition: opacity 0.2s ease-in-out 1.5s }
+			.active #logo svg #d0 { opacity: 0; }
+
+			#logo svg #f1 { opacity: 0; transition: opacity 0.2s ease-in-out 1.1s }
+			.active #logo svg #f1 { opacity: 1; }
+			#logo svg #d1 { opacity: 1; transition: opacity 0.2s ease-in-out 1.1s }
+			.active #logo svg #d1 { opacity: 0; }
+			
+			#logo svg #f2 { opacity: 0; transition: opacity 0.2s ease-in-out 1.7s }
+			.active #logo svg #f2 { opacity: 1; }
+			#logo svg #d2 { opacity: 1; transition: opacity 0.2s ease-in-out 1.7s }
+			.active #logo svg #d2 { opacity: 0; }
+			
+
+			#logo svg #f3 { opacity: 0; transition: opacity 0.2s ease-in-out 1.6s }
+			.active #logo svg #f3 { opacity: 1; }
+			#logo svg #d3 { opacity: 1; transition: opacity 0.2s ease-in-out 1.6s }
+			.active #logo svg #d3 { opacity: 0; }
+			
+			#logo svg #f4 { opacity: 0; transition: opacity 0.2s ease-in-out 1.4s }
+			.active #logo svg #f4 { opacity: 1; }
+			#logo svg #d4 { opacity: 1; transition: opacity 0.2s ease-in-out 1.4s }
+			.active #logo svg #d4 { opacity: 0; }
+			
+			#logo svg #f5 { opacity: 0; transition: opacity 0.2s ease-in-out 2s }
+			.active #logo svg #f5 { opacity: 1; }
+			#logo svg #d5 { opacity: 1; transition: opacity 0.2s ease-in-out 2s }
+			.active #logo svg #d5 { opacity: 0; }
+		
+			#logo svg #f6 { opacity: 0; transition: opacity 0.2s ease-in-out 1.0s }
+			.active #logo svg #f6 { opacity: 1; }
+			#logo svg #d6 { opacity: 1; transition: opacity 0.2s ease-in-out 1.0s }
+			.active #logo svg #d6 { opacity: 0; }
+					
+			#logo svg #f7 { opacity: 0; transition: opacity 0.2s ease-in-out 1.3s }
+			.active #logo svg #f7 { opacity: 1; }
+			#logo svg #d7 { opacity: 1; transition: opacity 0.2s ease-in-out 1.3s }
+			.active #logo svg #d7 { opacity: 0; }
+						
+			#input {
+				display: block;
+				position: relative;
+				border: 0.5px solid #ccc;
+				background-color: #fefefe;
+				margin: 0;
+				overflow: hidden;
+				font-family: "Helvetica Neue", Helvetica, sans-serif;
+				border-radius: 1em;
+			}
+			
+			.show-result #input {
+				background-color: #fff;
+				border-bottom-width: 0;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+			
+			#q {
+				display: block;
+				position: relative;
+				width: 94%;
+				background-color: transparent;
+				margin: 0;
+				padding: .1em 3%;
+				font-size: .9em;
+				font-weight: 300;
+				line-height: 2em;
+				border: 0;
+				
+			}
+			
+			#divider {
+				display: none;
+				position: absolute;
+				top: 190px;
+				left: .7em;
+				right: .7em;
+				height: 1px;
+			}
+			
+			.show-result #divider {
+				display: block;
+				background-color: #ccc;
+				z-index: 10;
+			}
+
+			#result {
+				display: none;
+			}
+			
+			#suggestions {
+				display: block;
+				position: relative;
+				max-height: 300px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				border: 0.5px solid transparent;
+				background-color: transparent;
+				z-index: 1;
+				font-family: "Helvetica Neue", "Helvetica", sans-serif;
+			}
+			
+			.show-result #suggestions {
+				border: 0.5px solid #d6d6d6;
+				border-top-width: 0;
+				background-color: #fff;
+				border-bottom-left-radius: 1em;
+				border-bottom-right-radius: 1em;
+			}
+			
+			#suggestions ul {
+				display: block;
+				position: relative;
+				margin: .2em 0 0;
+				padding: 0;
+				list-style: none;
+			}
+			
+			#suggestions ul li {
+				display: block;
+				position: relative;
+				margin: 0;
+				padding: .2em .7em;
+				overflow: hidden;
+			}
+
+			#suggestions ul li.noresult {
+				display: block;
+				position: relative;
+				margin: 0;
+				padding: .7em .7em;
+				overflow: hidden;
+			}
+			
+			#suggestions ul li:hover {
+				background-color: #f6f6f6;
+			}
+
+			#suggestions ul li em {
+				font-weight: 300;
+				color: #666;
+				display: block;
+				text-align: center;
+				font-style: normal;
+			}
+
+			#suggestions ul li span {
+				font-weight: 300;
+				color: #222;
+			}
+
+			#suggestions ul li span strong {
+				font-weight: 550;
+			}
+
+			#suggestions ul li span+span {
+				display: block;
+				position: absolute;
+				right: 1.2em;
+				top: .8em;
+				color: #666;
+				font-size: .6em;
+			}
+			
+			#disclaimer {
+				display: block;
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 3em;
+				z-index: 0;
+			}
+			
+			#disclaimer p {
+				margin: 0;
+				padding: .3em 0;
+				font-size: .67em;
+				color: #999;
+				font-weight: 300;
+				text-align: center;
+			}
+
+			#disclaimer p+p {
+				display: none;
+				color: #888;
+				font-weight: 400;
+			}
+			
+			.standalone #disclaimer p+p {
+				display: block;
+			}
+			
+			#spinner {
+				display: none;
+				position: relative;
+			}
+			
+			.spinner {
+				margin: 20px auto 20px;
+				width: 100px;
+				text-align: center;
+			}
+
+			.spinner > div {
+				width: 18px;
+				height: 18px;
+				background-color: #333;
+
+				border-radius: 100%;
+				display: inline-block;
+				-webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+				animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+			}
+
+			.spinner .bounce1 {
+				-webkit-animation-delay: -0.32s;
+				animation-delay: -0.32s;
+			}
+
+			.spinner .bounce2 {
+				-webkit-animation-delay: -0.16s;
+				animation-delay: -0.16s;
+			}
+
+			@-webkit-keyframes sk-bouncedelay {
+				0%, 80%, 100% { -webkit-transform: scale(0) }
+				40% { -webkit-transform: scale(1.0) }
+			}
+
+			@keyframes sk-bouncedelay {
+				0%, 80%, 100% { 
+					-webkit-transform: scale(0);
+					transform: scale(0);
+				} 40% { 
+					-webkit-transform: scale(1.0);
+					transform: scale(1.0);
+				}
+			}
+			
+			@media screen and (max-width: 400px) {
+				#form {
+					font-size: 25px !important;
+				}
+			}
+
+		</style>
+		<script type="text/javascript" src="assets/js/zepto.min.js"></script>
+		<script type="text/javascript" src="assets/js/trie.min.js"></script>
+		<script type="text/javascript">
+
+			$(document).ready(function(){
+
+				// cache often used dom nodes
+				var $q = $('#q');
+				var $result = $("#result");
+				var $spinner = $("#spinner");
+				var $form = $("#form");
+				var $window = $(window);
+
+				// detect inside frame
+				if (window.self === window.top) $('html').addClass('standalone');
+
+				// other caches
+				var triecache = {};
+				var lastpass = null;
+
+				// reset
+				$q.val("");
+				$result.hide();
+				
+				$q.focus(function(){
+					$q.attr("placeholder","Type a password")
+				}).blur(function(){
+					$q.attr("placeholder","How secret is your password? Search our database here.")
+				});
+				
+				var nf = new Intl.NumberFormat();
+
+				// act on finished key presses
+				$q.on('keyup', function(evt){
+
+					if (event.which === 27) $q.val("");
+
+					// check if input changed
+					var password = $q.val();
+					if (password === lastpass) return;
+					lastpass = password;
+
+					// act depending on length
+					switch (password.length) {
+						case 0:
+							// reset to nothing
+							$result.hide();
+							$spinner.hide();
+							$form.removeClass('show-result');
+						break;
+						case 1:
+						case 2:
+						case 3: 
+							// get prepared data
+							$result.hide();
+							$spinner.show();
+							$form.removeClass('show-result');
+							$.ajax({
+								method: "GET",
+								url: "assets/data/"+password.split("").map(function(c,i){
+									return password.charCodeAt(i).toString(16);
+								}).join("/")+".json", 
+								dataType: "json",
+								success: function(data, status){
+									if (status === 'success') {
+										$('#result').html(Object.keys(data).sort(function(a,b){
+											return (data[b]-data[a]);
+										}).map(function(k){
+											return '<li><span>'+k.substr(0,password.length)+'<strong>'+k.substr(password.length)+'</strong></span><span>~ '+(nf.format(data[k]))+' Hits</span></li>'
+										}).join(''));
+										$result.show();
+										$spinner.hide();
+										$form.addClass('show-result');
+									} else {
+										// show fail
+										$('#result').html('<li class="noresult"><em>Not found.</em></li>');
+										$result.show();
+										$spinner.hide();
+										$form.addClass('show-result');
+									}
+								},
+								error: function(){
+									$('#result').html('<li class="noresult"><em>Not found.</em></li>');
+									$result.show();
+									$spinner.hide();
+									$form.addClass('show-result');
+								}
+							});
+						break;
+						default: 
+							// get by trie
+							$result.hide();
+							$spinner.show();
+							$form.removeClass('show-result');
+							setTimeout(function(){ // ensure css change before blocking trie code
+								var pw = password.substr(0,3);
+								(function(next){
+									if (triecache.hasOwnProperty(pw)) return next(triecache[pw]);
+									$.ajax({
+										method: "GET",
+										url: "assets/data/"+pw.split("").map(function(c,i){
+											return pw.charCodeAt(i).toString(16);
+										}).join("/")+".trie.json", 
+										dataType: "json",
+										success: function(data, status){
+											if (status === 'success') {
+												triecache[pw] = triemap(data);
+												next(triecache[pw]);
+											} else {
+												// show fail
+												$spinner.hide();
+												$('#result').html('<li class="noresult"><em>Not found.</em></li>');
+												$result.show();
+												$form.addClass('show-result');
+											}
+										},
+										error: function(){
+											$spinner.hide();
+											$('#result').html('<li class="noresult"><em>Not found.</em></li>');
+											$result.show();
+											$form.addClass('show-result');
+										}
+									});
+								})(function(trie){
+									var result = trie.getPrefixedWith(password);
+									if (result.length > 0) {
+										$('#result').html(result.sort(function(a,b){
+											return (b[1]-a[1]);
+										}).slice(0,250).map(function(v){
+											return '<li><span>'+v[0].substr(0,password.length)+'<strong>'+v[0].substr(password.length)+'</strong></span><span>~ '+(nf.format(v[1]))+' Hits</span></li>'
+										}).join(''));
+										$spinner.hide();
+										$result.show();
+										$form.addClass('show-result');
+									} else {
+										$spinner.hide();
+										$('#result').html('<li class="noresult"><em>Not found.</em></li>');
+										$result.show();
+										$form.addClass('show-result');
+									}
+									delete result;
+								});
+							},100);
+						break;
+					}
+				});
+				
+				// activation
+				new IntersectionObserver(function(e){
+					if (e[0].intersectionRatio > 0.9) {
+						// document.getElementById("doc").style.backgroundColor = '#0f0';
+						$('html').addClass('active');
+						this.disconnect();
+					}
+				}, { threshold: [ 1 ] }).observe(document.getElementById("form"));
+				
+				// resize fin
+				$window.resize(function(){
+					$form.css({ transform: 'scale('+((Math.min(window.innerWidth, window.innerHeight, 800)-10)/500)+')' });
+				});
+				$window.resize();
+				
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div id="gradient"></div>
+		<div id="form">
+			<div id="logo">
+				<svg xmlns="http://www.w3.org/2000/svg" width="300" height="60.985" viewBox="0 0 79.375 16.136">
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="4.6859999" id="d0"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="14.687001" id="d1"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="24.687" id="d2"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="34.688" id="d3"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="44.688" id="d4"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="54.688995" id="d5"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="64.688995" id="d6"/>
+					<circle style="fill:#333333" r="4.6859999" cy="11.450006" cx="74.690002" id="d7"/>
+					<path id="f0" style="fill:#333333;stroke-width:0.11720576" d="m 2.6317999,10.018095 v 5.48523 c 0,0.07032 -0.046882,0.117205 -0.1172058,0.117205 H 0.68618429 c -0.0586029,0 -0.11720576,-0.04688 -0.11720576,-0.117205 V 1.9426181 c 0,-0.070323 0.0468823,-0.1172057 0.11720576,-0.1172057 H 2.9013732 c 1.1486164,0 2.0042184,0.082044 2.5902472,0.246132 0.5860289,0.1640881 1.1134548,0.4688231 1.5588367,0.914205 0.7852785,0.773558 1.1720576,1.7463658 1.1720576,2.930144 0,1.2658222 -0.4219408,2.2620711 -1.2541017,3.0004674 C 6.1362521,9.6547571 4.9993563,10.018095 3.5811666,10.018095 Z m 0,-1.9338951 h 0.773558 c 1.8870128,0 2.8363794,-0.7383963 2.8363794,-2.2034683 0,-1.4181896 -0.9728078,-2.1331448 -2.930144,-2.1331448 H 2.6317999 Z"/>
+					<path id="f1" style="fill:#333333;stroke-width:0.11720576" d="m 16.403477,6.9238629 h 1.769807 c 0.0586,0 0.117205,0.046882 0.117205,0.1172058 v 8.4622563 c 0,0.07032 -0.04688,0.117205 -0.117205,0.117205 h -1.769807 c -0.0586,0 -0.117206,-0.04688 -0.117206,-0.117205 v -0.797 c -0.82044,0.773558 -1.699484,1.160337 -2.63713,1.160337 -1.195498,0 -2.180027,-0.433661 -2.953585,-1.300984 -0.7735578,-0.890763 -1.1603368,-1.992497 -1.1603368,-3.316923 0,-1.3009835 0.386779,-2.390997 1.1603368,-3.2583197 0.773558,-0.8673226 1.734645,-1.3009839 2.894982,-1.3009839 0.996249,0 1.898734,0.4219407 2.695733,1.2541016 V 7.0527892 c 0,-0.082044 0.0586,-0.1289263 0.117206,-0.1289263 z m -4.828878,4.3131721 c 0,0.832161 0.222691,1.511954 0.668073,2.03938 0.457103,0.527426 1.01969,0.796999 1.711204,0.796999 0.738397,0 1.336146,-0.257852 1.781528,-0.773558 0.457102,-0.527426 0.679793,-1.207219 0.679793,-2.015939 0,-0.82044 -0.222691,-1.488513 -0.679793,-2.0159389 -0.457103,-0.5157053 -1.043131,-0.773558 -1.769807,-0.773558 -0.679794,0 -1.254102,0.2578527 -1.711204,0.7852786 -0.457103,0.5274259 -0.679794,1.1837783 -0.679794,1.9573363 z"/>
+					<path id="f2" style="fill:#333333;stroke-width:0.11720576" d="m 26.225319,8.4592584 -1.44163,0.773558 c -0.0586,0.035162 -0.128927,0.011721 -0.152368,-0.046882 -0.246132,-0.4688231 -0.550867,-0.7032346 -0.914205,-0.7032346 -0.187529,0 -0.339897,0.058603 -0.468823,0.1875292 -0.128926,0.1172058 -0.19925,0.2812939 -0.19925,0.4688231 0,0.3281761 0.386779,0.6680728 1.148617,0.9962489 1.054852,0.457102 1.769807,0.879043 2.133145,1.265822 0.363337,0.386779 0.550867,0.902484 0.550867,1.558837 0,0.843881 -0.304735,1.547116 -0.914205,2.109703 -0.59775,0.539147 -1.312705,0.80872 -2.156586,0.80872 -1.406469,0 -2.414439,-0.679793 -3.023909,-2.02766 -0.02344,-0.0586 0,-0.128926 0.0586,-0.152367 l 1.500234,-0.703235 c 0.0586,-0.02344 0.117205,0 0.152367,0.04688 0.210971,0.363337 0.375059,0.597749 0.480544,0.703234 0.246132,0.222691 0.527426,0.339897 0.867322,0.339897 0.668073,0 1.00797,-0.304735 1.00797,-0.925926 0,-0.351617 -0.257853,-0.691514 -0.773558,-0.996249 -0.19925,-0.105485 -0.3985,-0.199249 -0.597749,-0.293014 -0.19925,-0.09377 -0.3985,-0.187529 -0.60947,-0.293014 -0.574309,-0.281294 -0.984529,-0.574309 -1.21894,-0.855602 -0.304735,-0.363338 -0.445382,-0.8321611 -0.445382,-1.4064693 0,-0.7501169 0.257853,-1.383028 0.773558,-1.8752921 0.527426,-0.4922642 1.160337,-0.7383963 1.910454,-0.7383963 1.066572,0 1.875292,0.5391465 2.402718,1.6174395 0,0.035162 -0.01172,0.1054851 -0.07032,0.1406469 z"/>
+					<path id="f3" style="fill:#333333;stroke-width:0.11720576" d="m 34.17187,8.4592584 -1.441631,0.773558 c -0.0586,0.035162 -0.128926,0.011721 -0.152367,-0.046882 -0.246133,-0.4688231 -0.550867,-0.7032346 -0.914205,-0.7032346 -0.18753,0 -0.339897,0.058603 -0.468823,0.1875292 -0.128927,0.1172058 -0.19925,0.2812939 -0.19925,0.4688231 0,0.3281761 0.386779,0.6680728 1.148616,0.9962489 1.054852,0.457102 1.769807,0.879043 2.133145,1.265822 0.363338,0.386779 0.550867,0.902484 0.550867,1.558837 0,0.843881 -0.304735,1.547116 -0.914205,2.109703 -0.597749,0.539147 -1.312704,0.80872 -2.156586,0.80872 -1.406469,0 -2.414438,-0.679793 -3.023908,-2.02766 -0.02344,-0.0586 0,-0.128926 0.0586,-0.152367 l 1.500233,-0.703235 c 0.0586,-0.02344 0.117206,0 0.152368,0.04688 0.21097,0.363337 0.375058,0.597749 0.480543,0.703234 0.246132,0.222691 0.527426,0.339897 0.867323,0.339897 0.668073,0 1.00797,-0.304735 1.00797,-0.925926 0,-0.351617 -0.257853,-0.691514 -0.773558,-0.996249 -0.19925,-0.105485 -0.3985,-0.199249 -0.59775,-0.293014 -0.19925,-0.09377 -0.398499,-0.187529 -0.60947,-0.293014 -0.574308,-0.281294 -0.984528,-0.574309 -1.21894,-0.855602 -0.304735,-0.363338 -0.445382,-0.8321611 -0.445382,-1.4064693 0,-0.7501169 0.257853,-1.383028 0.773558,-1.8752921 0.527426,-0.4922642 1.160337,-0.7383963 1.910454,-0.7383963 1.066573,0 1.875292,0.5391465 2.402718,1.6174395 0.01172,0.035162 -0.01172,0.1054851 -0.07032,0.1406469 z"/>
+					<path id="f4" style="fill:#333333;stroke-width:0.11720576" d="m 38.320954,6.9824658 2.226909,4.8992012 2.320674,-5.5086712 c 0.03516,-0.093765 0.175809,-0.093765 0.210971,0 l 2.344115,5.5086712 2.191748,-4.8992012 c 0.02344,-0.046882 0.0586,-0.070323 0.105485,-0.070323 h 1.969057 c 0.08204,0 0.140646,0.093765 0.105485,0.1640881 L 45.482226,16.03075 c -0.04688,0.09376 -0.175809,0.08204 -0.210971,0 l -2.297233,-5.368023 -2.320674,5.368023 c -0.03516,0.09376 -0.164088,0.09376 -0.21097,0 L 36.129206,7.0762304 c -0.03516,-0.082044 0.02344,-0.1640881 0.105485,-0.1640881 h 1.980778 c 0.03516,0.011721 0.08204,0.035162 0.105485,0.070323 z"/>
+					<path id="f5" style="fill:#333333;stroke-width:0.11720576" d="m 51.084661,11.201873 c 0,-1.2541015 0.457103,-2.3206739 1.359587,-3.1997171 0.902484,-0.8790432 2.004218,-1.3244251 3.305202,-1.3244251 1.300984,0 2.414439,0.4453819 3.328644,1.3244251 0.902484,0.8907638 1.347866,1.9807773 1.347866,3.2700411 0,1.300984 -0.457102,2.390997 -1.359587,3.281761 -0.914205,0.879043 -2.027659,1.312704 -3.352084,1.312704 -1.312705,0 -2.414439,-0.445381 -3.293482,-1.336145 -0.890764,-0.890764 -1.336146,-1.992498 -1.336146,-3.328644 z m 2.062821,0.03516 c 0,0.867323 0.234412,1.558836 0.703235,2.062821 0.480544,0.515706 1.113455,0.773558 1.898733,0.773558 0.785279,0 1.41819,-0.257852 1.898734,-0.761837 0.468823,-0.503985 0.714955,-1.183778 0.714955,-2.02766 0,-0.843881 -0.234412,-1.5236747 -0.714955,-2.0276595 -0.480544,-0.5157053 -1.113455,-0.773558 -1.898734,-0.773558 -0.773558,0 -1.394748,0.2578527 -1.875292,0.773558 -0.492264,0.5157054 -0.726676,1.1720575 -0.726676,1.9807775 z"/>
+					<path id="f6" style="fill:#333333;stroke-width:0.11720576" d="m 63.145134,6.9238629 h 1.758086 c 0.0586,0 0.117206,0.046882 0.117206,0.1172058 v 0.6563522 c 0.363338,-0.386779 0.691514,-0.6563522 0.972808,-0.7969991 0.293014,-0.1523675 0.632911,-0.222691 1.01969,-0.222691 0.492264,0 1.007969,0.1523675 1.547116,0.4571025 0.0586,0.035162 0.07032,0.093765 0.04688,0.1523675 l -0.796999,1.6174395 c -0.03516,0.058603 -0.105485,0.082044 -0.164088,0.046882 -0.339897,-0.222691 -0.668073,-0.3398967 -0.996249,-0.3398967 -1.090014,0 -1.62916,0.8321609 -1.62916,2.4847624 v 4.395216 c 0,0.07032 -0.04688,0.117206 -0.117206,0.117206 h -1.758086 c -0.0586,0 -0.117206,-0.04688 -0.117206,-0.117206 V 7.0410687 c 0,-0.070324 0.0586,-0.1172058 0.117206,-0.1172058 z"/>
+					<path id="f7" style="fill:#333333;stroke-width:0.11720576" d="m 76.49487,0.53614899 h 1.769807 c 0.0586,0 0.117206,0.0468823 0.117206,0.11720576 V 15.503325 c 0,0.07032 -0.04688,0.117205 -0.117206,0.117205 H 76.49487 c -0.0586,0 -0.117206,-0.04688 -0.117206,-0.117205 v -0.797 c -0.785278,0.773558 -1.676042,1.160337 -2.660571,1.160337 -1.183778,0 -2.156586,-0.433661 -2.930144,-1.300984 -0.773558,-0.890763 -1.160337,-1.992497 -1.160337,-3.316923 0,-1.3009835 0.386779,-2.3792765 1.160337,-3.2465991 0.761838,-0.8790432 1.734646,-1.3127045 2.894983,-1.3127045 1.007969,0 1.910454,0.4219407 2.707453,1.2541016 V 0.65335475 c -0.01172,-0.0703235 0.04688,-0.11720576 0.105485,-0.11720576 z M 71.665993,11.237035 c 0,0.832161 0.22269,1.511954 0.668072,2.03938 0.457103,0.527426 1.01969,0.796999 1.711204,0.796999 0.738397,0 1.336146,-0.257852 1.781528,-0.773558 0.457102,-0.527426 0.679793,-1.207219 0.679793,-2.015939 0,-0.82044 -0.222691,-1.488513 -0.679793,-2.0159389 -0.457102,-0.5157053 -1.043131,-0.773558 -1.769807,-0.773558 -0.679793,0 -1.254102,0.2578527 -1.711204,0.7852786 -0.457103,0.5274259 -0.679793,1.1837783 -0.679793,1.9573363 z"/>
+				</svg>
+			</div>
+			<div id="input">
+				<input id="q" name="q" value="" type="text" placeholder="How secret is your password? Search our database here." autocomplete="off">
+			</div>
+			<div id="divider"></div>
+			<div id="suggestions">
+				<div id="spinner">
+					<div class="spinner">
+						<div class="bounce1"></div>
+						<div class="bounce2"></div>
+						<div class="bounce3"></div>
+					</div>
+				</div>
+				<ul id="result"></ul>
+			</div>
+			<div id="disclaimer">
+				<p>
+					The database contains all passwords that had more than 50 instances in the data set. The first three letters submitted are transmitted to retrieve results, but are not recorded. Passwords presented here independent of all other login data. Info.graphics is not recording the entries typed in the search bar. This is for entertainment and educational informational purposes only.
+				</p>
+				<p>
+					If you find your password in the list, you should change it.
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
