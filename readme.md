@@ -1,6 +1,6 @@
 # password-search
 
-password-search is a website in the style of a search engine that suggests autocompleted passwords based on the first typed characters.
+[password-search](https://yetzt.github.io/password-search) is a website in the style of a search engine that suggests autocompleted passwords based on the first typed characters.
 all ascii-passwords with more than 50 occurances across the several dumps acquired from the so-called *collection leaks* were included in the dataset.
 
 this is done in a privacy-concious way by only ever transmitting the first three characters to the server and examining subsequent characters in a trie search locally in the browser.
